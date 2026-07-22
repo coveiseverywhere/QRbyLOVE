@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>COVE LOVE Mood Check</title>
+
+<!-- ★ GA4 — G-XXXXXXXXXX를 본인 Measurement ID로 교체하세요 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LZ9ZWECN26"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', { send_page_view: true });
+</script>
+
+<style>
+:root{--bg:#0b0b0b;--fg:#f4f1ea;--muted:#9b9b9b;--line:#292929;--accent:#f4f1ea}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif}
+main{max-width:520px;min-height:100svh;margin:auto;padding:28px 22px 34px;display:flex;flex-direction:column}
+.brand{font-size:12px;letter-spacing:.22em;margin-bottom:46px}
+.eyebrow{font-size:12px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:38px;line-height:1.08;margin:12px 0 16px;letter-spacing:-.04em}
+p{color:#c7c7c7;line-height:1.6}
+.screen{display:none;flex:1;flex-direction:column}
+.screen.active{display:flex}
+.options{display:grid;gap:12px;margin-top:28px}
+button,.linkbtn{width:100%;border:1px solid var(--line);background:#141414;color:var(--fg);padding:17px 16px;border-radius:14px;font-size:16px;text-align:left;cursor:pointer;font-family:inherit}
+button:hover{border-color:#555}
+.primary{background:var(--accent);color:#111;text-align:center;font-weight:700;margin-top:auto;border:none}
+.ghost{text-align:center;background:transparent}
+.progress{height:3px;background:#222;border-radius:9px;overflow:hidden;margin:10px 0 34px}
+.bar{height:100%;background:var(--fg);transition:.3s}
+.card{border:1px solid var(--line);background:#111;border-radius:20px;padding:22px;margin-top:22px}
+.result{font-size:34px;font-weight:800;letter-spacing:-.04em;margin:8px 0}
+.pill{display:inline-block;border:1px solid #3a3a3a;border-radius:999px;padding:7px 10px;color:#bbb;font-size:12px;margin:4px 4px 0 0}
+.actions{display:grid;gap:10px;margin-top:22px}
+.small{font-size:12px;color:#777;margin-top:16px}
+.share{font-size:13px;color:#aaa;text-align:center;margin-top:16px}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">COVE LOVE · NAMYEONG</div>
+
+<!-- S0 : 인트로 -->
+<section id="s0" class="screen active">
+  <div class="eyebrow">15 SEC MOOD CHECK</div>
+  <h1>오늘 당신에게<br>가장 부족한 건?</h1>
+  <p>세 가지 질문에 답하면 지금 어울리는 한 잔과 자리를 추천합니다.</p>
+  <button class="primary" onclick="go(1)">시작하기</button>
+</section>
+
+<!-- S1 : 에너지 -->
+<section id="s1" class="screen">
+  <div class="eyebrow">01 / 03</div>
+  <div class="progress"><div class="bar" style="width:33%"></div></div>
+  <h1>오늘의 에너지는?</h1>
+  <div class="options">
+    <button onclick="pick('energy','low', 2)">거의 방전</button>
+    <button onclick="pick('energy','mid', 2)">그럭저럭</button>
+    <button onclick="pick('energy','high',2)">아직 넘침</button>
+  </div>
+</section>
+
+<!-- S2 : 동행 -->
+<section id="s2" class="screen">
+  <div class="eyebrow">02 / 03</div>
+  <div class="progress"><div class="bar" style="width:66%"></div></div>
+  <h1>누구와 왔나요?</h1>
+  <div class="options">
+    <button onclick="pick('with','solo',  3)">혼자</button>
+    <button onclick="pick('with','friend',3)">친구</button>
+    <button onclick="pick('with','lover', 3)">연인</button>
+  </div>
+</section>
+
+<!-- S3 : 원하는 것 -->
+<section id="s3" class="screen">
+  <div class="eyebrow">03 / 03</div>
+  <div class="progress"><div class="bar" style="width:100%"></div></div>
+  <h1>지금 원하는 건?</h1>
+  <div class="options">
+    <button onclick="finish('talk'  )">편하게 대화</button>
+    <button onclick="finish('music' )">좋은 음악</button>
+    <button onclick="finish('quiet' )">잠깐의 고요</button>
+  </div>
+</section>
+
+<!-- S4 : 결과 -->
+<section id="s4" class="screen">
+  <div class="eyebrow">YOUR MOOD</div>
+  <div class="card">
+    <div class="result" id="title">CALM SEEKER</div>
+    <p id="desc"></p>
+    <div><span class="pill" id="drink"></span><span class="pill" id="seat"></span><span class="pill">외벽 QR 한정</span></div>
+  </div>
+  <div class="actions">
+    <!-- ★ 네이버맵 URL을 실제 매장 링크로 교체하세요 -->
+    <a id="mapLink" class="linkbtn primary" href="https://map.naver.com/p/entry/place/2064156568?lng=126.9734004&lat=37.5447841&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607211548%26locale%3Dko%26svcName%3Dmap_pcv5&entry=plt&searchType=place&c=15.00,0,0,0,dh/" target="_blank"
+       style="text-decoration:none;display:block;text-align:center;font-weight:700;padding:17px">
+      COVE LOVE 길찾기
+    </a>
+    <button class="ghost" onclick="copyResult()">결과 복사하기</button>
+    <button class="ghost" onclick="restart()">다시 진단하기</button>
+  </div>
+  <div class="share">주문 시 이 화면을 보여주면 음료 한잔을 제공해 드립니다</div>
+</section>
+
+</main>
+<script>
+/* UTM 수집 */
+const utm = (function(){
+  const p = new URLSearchParams(window.location.search);
+  return {
+    utm_source:   p.get('utm_source')   || '(none)',
+    utm_medium:   p.get('utm_medium')   || '(none)',
+    utm_campaign: p.get('utm_campaign') || '(none)',
+    utm_content:  p.get('utm_content')  || '(none)',
+  };
+})();
+
+/* 시간대 자동 감지 */
+const TIME_SLOT = (function(){
+  const h = new Date().getHours();
+  if(h>=5  && h<12) return '오전';
+  if(h>=12 && h<17) return '오후';
+  if(h>=17 && h<21) return '저녁';
+  return '심야';
+})();
+
+/* GA4 헬퍼 */
+function track(name, extra){
+  if(typeof gtag==='undefined') return;
+  gtag('event', name, Object.assign({ time_slot: TIME_SLOT }, utm, extra||{}));
+}
+
+const a = {};
+
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+}
+
+function pick(key, val, next){ a[key]=val; go(next); }
+
+function finish(v){
+  a.want = v;
+
+  let t='CALM SEEKER',
+      d='오늘은 속도를 낮추는 시간이 필요합니다. 바의 조용한 자리에서 천천히 머물러 보세요.',
+      drink='추천: Signinet', seat='추천 자리: 바 좌측';
+
+  if(a.energy==='high' || v==='music'){
+    t='NIGHT EXPLORER';
+    d='아직 밤을 더 즐길 에너지가 남아 있습니다. 음악이 잘 들리는 자리와 선명한 한 잔이 어울립니다.';
+    drink='추천: COVE Larger'; seat='추천 자리: 스피커 근처';
+  }
+  if(a.with==='lover' && v==='talk'){
+    t='SOFT SIGNAL';
+    d='큰 이벤트보다 둘만의 대화가 필요한 밤입니다. 조금 떨어진 테이블과 부드러운 한 잔을 추천합니다.';
+    drink='추천: LOVE Highball'; seat='추천 자리: 코너 테이블';
+  }
+  if(a.with==='friend' && a.energy==='low'){
+    t='RESET CREW';
+    d='오늘은 무리하지 않고 가볍게 회복하는 시간이 좋습니다. 편한 자리에서 한 잔만 천천히 시작해 보세요.';
+    drink='추천: COVE XPA'; seat='추천 자리: 입구 쪽 테이블';
+  }
+
+  document.getElementById('title').textContent = t;
+  document.getElementById('desc').textContent  = d;
+  document.getElementById('drink').textContent = drink;
+  document.getElementById('seat').textContent  = seat;
+
+  /* GA4: survey_complete — energy / companion / want / mood_result / time_slot / UTM */
+  track('survey_complete', {
+    energy:      a.energy,
+    companion:   a.with,
+    want:        a.want,
+    mood_result: t,
+  });
+
+  go(4);
+}
+
+function copyResult(){
+  const txt = '오늘의 COVE LOVE 무드: '
+    + document.getElementById('title').textContent + ' — '
+    + document.getElementById('desc').textContent;
+  navigator.clipboard?.writeText(txt)
+    .then(()=>alert('결과가 복사되었습니다.'))
+    .catch(()=>prompt('복사하세요', txt));
+}
+
+function restart(){
+  for(const k in a) delete a[k];
+  go(0);
+}
+
+track('survey_start');
+</script>
+</body>
+</html>
